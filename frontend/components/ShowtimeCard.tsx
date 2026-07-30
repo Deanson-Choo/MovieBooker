@@ -2,17 +2,18 @@ import { MovieCatalogItem } from "@/services/catalog/getMovies";
 import Image from "next/image";
 import Link from "next/link";
 
+
 type ShowtimeCardProps = {
     item: MovieCatalogItem
 }
 
 export default function ShowtimeCard({ item } : ShowtimeCardProps) {
-    const { id, title, poster_url, showtimes } = item;
+    const { title, poster_url, showtimes } = item;
     
     return (
         <div className="flex gap-10 bg-white/5 p-5 rounded-lg">
             <div className="flex flex-col gap-2 items-center">
-                <img src={poster_url} alt={title} className="w-64 h-96 object-cover rounded-lg" />
+                <Image src={poster_url} alt={title} width={256} height={384} className="w-64 h-96 object-cover rounded-lg" />
                 <p className="text-lg text-primary font-semibold">{title}</p>
             </div>
             <div className="flex flex-wrap gap-3 w-full content-start">

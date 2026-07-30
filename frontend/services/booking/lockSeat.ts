@@ -11,7 +11,7 @@ export async function lockSeat(showtimeId: number, seatId: number, sessionId: st
         } as ErrorResponse;
     }
 
-    var res: Response;
+    let res: Response;
     try {
         res = await fetch(`${API_URL}/booking/showtimes/${showtimeId}/seats/${seatId}/lock`, {
             method: 'POST',
@@ -20,7 +20,7 @@ export async function lockSeat(showtimeId: number, seatId: number, sessionId: st
                 'X-Session-ID': sessionId
             },
         });
-    } catch (error) {
+    } catch {
         throw {
             error: "Network Error",
             details: "Failed to connect to the backend server."

@@ -16,7 +16,7 @@ export default async function Pay(idempotencyKey: string, showtimeId: number, se
         } as ErrorResponse;
     }
 
-    var response: Response;
+    let response: Response;
     try {
         response = await fetch(`${API_URL}/payment/pay`, {
             method: "POST",
@@ -30,7 +30,7 @@ export default async function Pay(idempotencyKey: string, showtimeId: number, se
                 showtime_id: String(showtimeId),
             })
         });
-    } catch (error) {
+    } catch {
         throw {
             error: "Network Error",
             details: "Failed to connect to the backend server."

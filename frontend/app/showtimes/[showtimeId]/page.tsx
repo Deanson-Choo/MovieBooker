@@ -1,3 +1,4 @@
+import Image from "next/image";
 import SeatGrid from "@/components/SeatGrid";
 import { getMovies } from "@/services/catalog/getMovies";
 import { SEAT_STATUS_LEGEND as legend } from "@/constants/seatStatusLegend";
@@ -28,7 +29,7 @@ async function getShowtimeDetails(showtimeId: number) {
 }
 
 export default async function ShowtimePage({ params }: ShowtimePageProps) {
-    let { showtimeId } = await params;
+    const { showtimeId } = await params;
     const id = parseInt(showtimeId);
 
     const details = await getShowtimeDetails(id);
@@ -50,7 +51,7 @@ export default async function ShowtimePage({ params }: ShowtimePageProps) {
             {/* LEFT SIDE: Poster & Title */}
             <div className="flex flex-col gap-2 items-center shrink-0">
                 {poster_url ? (
-                    <img src={poster_url} alt={title} className="w-64 h-96 object-cover rounded-lg" />
+                    <Image src={poster_url} alt={title} width={256} height={384} className="w-64 h-96 object-cover rounded-lg" />
                 ) : (
                     <div className="w-64 h-96 bg-white/10 rounded-lg" />
                 )}

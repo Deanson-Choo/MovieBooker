@@ -15,7 +15,7 @@ export async function getMovies(): Promise<MovieCatalogItem[]> {
 
     try {
         res = await fetch(`${API_URL}/catalog`);
-    } catch (error) {
+    } catch {
         throw {
             error: "Network Error",
             details: "Failed to connect to the backend server."
