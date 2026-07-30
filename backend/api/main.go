@@ -8,6 +8,7 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -58,7 +59,17 @@ func main() {
 	}))
 
 	router.GET("/api/catalog", handlers.GetCatalog)
-	// router.POST("/api/catalog", handlers.AddMovie) // Disable on production
+
+	admin := router.Group("/api/admin")
+	admin.Use(func(c *gin.Context) {
+		key := os.Getenv("ADMIN_API_KEY")
+		if key == "" || c.GetHeader("Authorization") != "Bearer "+key {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			return
+		}
+		c.Next()
+	})
+	admin.POST("/catalog", handlers.AddMovie)
 
 	router.GET("/api/booking/showtimes/:showtime_id/seats", handlers.GetSeats)
 	router.POST("/api/booking/showtimes/:showtime_id/seats/:seat_id/lock", handlers.LockSeat)

@@ -110,6 +110,10 @@ func AddMovie(c *gin.Context) {
 	var req struct {
 		Title     string `json:"title"`
 		PosterURL string `json:"poster_url"`
+		Showtimes []struct {
+			StartsAt time.Time `json:"starts_at"`
+			Hall     string    `json:"hall"`
+		} `json:"showtimes"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -126,6 +130,31 @@ func AddMovie(c *gin.Context) {
 			Details: "title is required",
 		})
 		return
+	}
+
+	if len(req.Showtimes) != 5 {
+		c.JSON(http.StatusBadRequest, models.ErrorObject{
+			Error:   "Bad Request",
+			Details: "exactly 5 showtimes are required",
+		})
+		return
+	}
+
+	for i, st := range req.Showtimes {
+		if st.Hall == "" {
+			c.JSON(http.StatusBadRequest, models.ErrorObject{
+				Error:   "Bad Request",
+				Details: fmt.Sprintf("hall is required for showtime %d", i+1),
+			})
+			return
+		}
+		if st.StartsAt.IsZero() {
+			c.JSON(http.StatusBadRequest, models.ErrorObject{
+				Error:   "Bad Request",
+				Details: fmt.Sprintf("starts_at is required for showtime %d", i+1),
+			})
+			return
+		}
 	}
 
 	tx, err := db.Pool.Begin(ctx)
@@ -149,16 +178,9 @@ func AddMovie(c *gin.Context) {
 		return
 	}
 
-	// Insert showtimes at 1pm, 3pm, 5pm on today's date
-	now := time.Now()
-	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	showHours := []int{13, 15, 17}
-
-	for _, hour := range showHours {
-		startsAt := today.Add(time.Duration(hour) * time.Hour)
-
+	for _, st := range req.Showtimes {
 		var showtimeID int
-		err = tx.QueryRow(ctx, `INSERT INTO showtimes (movie_id, starts_at, hall) VALUES ($1, $2, $3) RETURNING id`, movieID, startsAt, "Hall 1").Scan(&showtimeID)
+		err = tx.QueryRow(ctx, `INSERT INTO showtimes (movie_id, starts_at, hall) VALUES ($1, $2, $3) RETURNING id`, movieID, st.StartsAt, st.Hall).Scan(&showtimeID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, models.ErrorObject{
 				Error:   "Internal Server Error",
@@ -190,3 +212,16 @@ func AddMovie(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Movie added", "movie_id": movieID})
 }
+
+// example payload:
+// {
+//   "title": "Inception",
+//   "poster_url": "https://...",
+//   "showtimes": [
+//     { "starts_at": "2026-07-31T13:00:00Z", "hall": "Hall 1" },
+//     { "starts_at": "2026-07-31T15:00:00Z", "hall": "Hall 2" },
+//     { "starts_at": "2026-07-31T17:00:00Z", "hall": "Hall 1" },
+//     { "starts_at": "2026-07-31T19:00:00Z", "hall": "Hall 3" },
+//     { "starts_at": "2026-07-31T21:00:00Z", "hall": "Hall 2" }
+//   ]
+// }
