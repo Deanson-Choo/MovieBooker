@@ -1,6 +1,6 @@
 "use client";
 
-import type { Seat as SeatData } from "@/services/booking/getSeats";
+import type { Seat as SeatData } from "@/types/Seat";
 
 
 type SeatProps = {
