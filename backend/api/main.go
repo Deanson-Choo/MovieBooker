@@ -47,9 +47,6 @@ func main() {
 	if frontendOrigin := os.Getenv("FRONTEND_URL"); frontendOrigin != "" {
 		allowedOrigins = append(allowedOrigins, frontendOrigin)
 	}
-	if corsOrigin := os.Getenv("CORS_ALLOWED_ORIGIN"); corsOrigin != "" {
-		allowedOrigins = append(allowedOrigins, corsOrigin)
-	}
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: allowedOrigins,
