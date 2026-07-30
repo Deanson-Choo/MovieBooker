@@ -8,6 +8,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	"github.com/Deanson-Choo/MovieBooker/api/handlers"
@@ -24,6 +25,11 @@ func main() {
 	// Load environment variables from .env file (if present)
 	_ = godotenv.Load()
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	// Initialise PostgreSQL connection pool
 	if err := db.Init(context.Background()); err != nil {
 		log.Fatalf("Failed to initialize PostgreSQL connection pool: %v", err)
@@ -36,8 +42,16 @@ func main() {
 	}
 
 	router := gin.Default()
+	allowedOrigins := []string{"http://localhost:4000"}
+	if frontendOrigin := os.Getenv("FRONTEND_URL"); frontendOrigin != "" {
+		allowedOrigins = append(allowedOrigins, frontendOrigin)
+	}
+	if corsOrigin := os.Getenv("CORS_ALLOWED_ORIGIN"); corsOrigin != "" {
+		allowedOrigins = append(allowedOrigins, corsOrigin)
+	}
+
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:4000"},
+		AllowOrigins: allowedOrigins,
 		AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders: []string{"Origin", "Content-Type", "Accept", "Authorization", "Idempotency-Key", "X-Session-ID"},
 		MaxAge:       12 * time.Hour,
@@ -52,5 +66,7 @@ func main() {
 
 	router.POST("/api/payment/pay", handlers.Pay)
 
-	router.Run()
+	if err := router.Run(":" + port); err != nil {
+		log.Fatalf("failed to start server: %v", err)
+	}
 }
