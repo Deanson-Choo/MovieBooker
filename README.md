@@ -4,6 +4,9 @@ A full-stack cinema booking application engineered to handle high-concurrency ti
 
 The architecture is specifically designed to guarantee data integrity during traffic spikes by preventing double-booking and double-charging race conditions.
 
+[View The Project](https://movie-booker-one.vercel.app)
+- Be aware of the cold start due to Render(backend) inactivity
+
 ## Screenshots
 
 ![Home page](./screenshots/home_page.png)
