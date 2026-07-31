@@ -5,6 +5,9 @@ export default function Footer() {
     return (
         <footer className="bg-white/5 py-4">
             <div className="flex flex-col items-center justify-center space-y-1">
+                 <p className="text-xs text-secondary mb-2">
+                    Disclaimer: This is a personal project and not affiliated with any official cinema or movie studio.
+                </p>
                 <p className="text-md text-primary font-semibold">Deanson Choo</p>
                 <p className="text-sm text-secondary">
                     &copy; {new Date().getFullYear()} Deanson Choo. All rights reserved.

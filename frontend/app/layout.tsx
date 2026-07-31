@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Cinema Booking App",
-  description: "A simple project by Deanson",
+  description: "A cinema booking project built by Deanson Choo",
 };
 
 export default function RootLayout({
