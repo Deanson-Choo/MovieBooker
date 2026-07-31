@@ -31,7 +31,3 @@ export default function () {
         console.error(`Unexpected status code: ${res.status}`);
     }
 }
-
-// This test simulate 100 concurrent users trying to lock the same seat 
-// Run with command:
-// k6 run -e SEAT_ID=30 SHOWTIME_ID=1 tests/load/double-booking.js

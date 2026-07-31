@@ -21,13 +21,11 @@ export default function PaymentModal({ showtimeId, sessionId, onSuccess, onClose
         setIsProcessing(true);
         try {
             const paymentResponse = await Pay(idempotencyKey, showtimeId, sessionId, email);
-            console.log(paymentResponse);
             alert(`Payment Successful! Email sent!`)
             onSuccess();
             onClose();
         } catch (error) {
             const err = error as ErrorResponse;
-            console.log("Payment failed:", err);
             alert(`Payment failed: ${err.error} - ${err.details}`);
         } finally {
             setIsProcessing(false);

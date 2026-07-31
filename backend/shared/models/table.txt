@@ -1,7 +1,14 @@
 CREATE TABLE movies (
-    id    SERIAL PRIMARY KEY,
-    title TEXT NOT NULL
-    poster_url TEXT 
+    id         SERIAL PRIMARY KEY,
+    title      TEXT NOT NULL,
+    poster_url TEXT
+);
+
+CREATE TABLE showtimes (
+    id         SERIAL PRIMARY KEY,
+    movie_id   INT         NOT NULL REFERENCES movies(id),
+    starts_at  TIMESTAMPTZ NOT NULL,
+    hall       VARCHAR(50)
 );
 
 CREATE TABLE seats (
@@ -10,13 +17,6 @@ CREATE TABLE seats (
     label       VARCHAR(10) NOT NULL,
     status      VARCHAR(10) NOT NULL DEFAULT 'available'
                 CHECK (status IN ('available', 'booked'))
-);
-
-CREATE TABLE showtimes (
-    id         SERIAL PRIMARY KEY,
-    movie_id   INT       NOT NULL REFERENCES movies(id),
-    starts_at  TIMESTAMP NOT NULL,
-    hall       VARCHAR(50)
 );
 
 CREATE TABLE bookings (

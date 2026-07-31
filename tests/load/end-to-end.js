@@ -35,7 +35,7 @@ export const options = {
     lock_error:       ["count==0"],
     payment_error:    ["count==0"],
 
-    http_req_duration: ["p(95)<2000"],
+    http_req_duration: ["p(95)<500"],
   },
 };
 
@@ -95,10 +95,4 @@ export default function () {
   }
 }
 
-// ─── Run ──────────────────────────────────────────────────────────────────────
-// k6 run \
-//   -e SHOWTIME_ID=1 \
-//   -e MIN_SEAT_ID=1 \
-//   -e MAX_SEAT_ID=100 \
-//   tests/load/end-to-end.js
 

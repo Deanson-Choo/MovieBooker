@@ -25,7 +25,6 @@ export async function getMovies(): Promise<MovieCatalogItem[]> {
     const data = await res.json();
 
     if (!res.ok) {
-        console.log("Error fetching movies:", data);
         throw data as ErrorResponse;
     }
     return data as MovieCatalogItem[];
